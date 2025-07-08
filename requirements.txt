@@ -1,3 +1,6 @@
 fastapi==0.116.0
 uvicorn==0.35.0
 python-dotenv==1.1.1
+sqlalchemy[asyncio]
+asyncpg==0.30.0
+alembic==1.16.2
