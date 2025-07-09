@@ -14,7 +14,7 @@ $ cd book-management-system-api
 Create a new .env file with provided example file.
 ````
 ````
-docker-compose up --build
+docker-compose up --build -d
 ````
 ````
 http://localhost:8001/docs
