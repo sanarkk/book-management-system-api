@@ -6,7 +6,8 @@ import datetime
 from sqlalchemy import text
 from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
+from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Query
 
 from app.models.user import User
 from app.db.database import get_db
@@ -550,3 +551,57 @@ async def import_books(
     await db.commit()
 
     return {"message": f"{len(books_to_insert)} books imported successfully."}
+
+
+@router.get("/export", summary="Export books in JSON or CSV format")
+async def export_books(
+    format: str = Query("json", regex="^(json|csv)$"),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """EXPORT BOOKS IN JSON AND CSV FORMAT"""
+    books_query = text(
+        """
+        SELECT 
+            books.id,
+            books.title,
+            books.genre,
+            books.published_year,
+            users.username AS author
+        FROM books
+        JOIN users ON books.user_id = users.id
+    """
+    )
+
+    books_raw = await db.execute(books_query)
+    books = books_raw.fetchall()
+    if not books:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="No books found"
+        )
+
+    books_out = [
+        {
+            "id": book.id,
+            "title": book.title,
+            "genre": book.genre,
+            "published_year": book.published_year,
+            "author": book.author,
+        }
+        for book in books
+    ]
+
+    if format == "json":
+        return JSONResponse(content=books_out)
+
+    elif format == "csv":
+        output = io.StringIO()
+        writer = csv.DictWriter(output, fieldnames=books_out[0].keys())
+        writer.writeheader()
+        writer.writerows(books_out)
+        output.seek(0)
+        return StreamingResponse(
+            output,
+            media_type="text/csv",
+            headers={"Content-Disposition": "attachment; filename=books.csv"},
+        )
