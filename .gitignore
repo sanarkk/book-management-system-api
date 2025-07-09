@@ -209,3 +209,4 @@ __marimo__/
 
 # DB Migrations
 alembic/versions/*
+!alembic/versions/.gitkeep
