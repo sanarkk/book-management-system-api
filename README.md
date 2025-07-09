@@ -20,6 +20,14 @@ docker-compose up --build
 http://localhost:8001/docs
 ````
 
+> Testing:
+````
+docker exec -it book-management-system-api /bin/sh
+````
+````
+pytest
+````
+
 
 
 
