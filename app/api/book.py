@@ -555,7 +555,7 @@ async def import_books(
 
 @router.get("/export", summary="Export books in JSON or CSV format")
 async def export_books(
-    format: str = Query("json", regex="^(json|csv)$"),
+    format: str = Query("json", pattern="^(json|csv)$"),
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):

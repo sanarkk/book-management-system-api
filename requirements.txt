@@ -8,3 +8,6 @@ python-jose[cryptography]
 passlib[bcrypt]
 pydantic[email]
 python-multipart==0.0.20
+pytest==8.4.1
+pytest-asyncio==1.0.0
+httpx==0.28.1
