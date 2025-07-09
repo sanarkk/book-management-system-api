@@ -4,3 +4,6 @@ python-dotenv==1.1.1
 sqlalchemy[asyncio]
 asyncpg==0.30.0
 alembic==1.16.2
+python-jose[cryptography]
+passlib[bcrypt]
+pydantic[email]

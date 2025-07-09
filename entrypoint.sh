@@ -7,7 +7,7 @@ done
 
 echo "DB is ready"
 
-if [ ! "$(ls -A alembic/versions)" ]; then
+if [ -z "$(ls -A alembic/versions 2>/dev/null)" ]; then
   echo "No migration scripts found, generating initial migration"
   alembic revision --autogenerate -m "create initial tables"
 else
